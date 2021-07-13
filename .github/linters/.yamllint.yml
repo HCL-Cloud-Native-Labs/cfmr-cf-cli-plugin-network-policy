@@ -1,0 +1,10 @@
+linters:
+  disable:
+    - maligned
+    - golint
+
+linters-settings:
+  govet:
+    enable:
+      - fieldalignment
+      - revive

@@ -1,0 +1,82 @@
+# This is a basic workflow for building and pushing the eirinix image to entitled registry.
+
+name: Main CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+ 
+jobs:
+  # This workflow contains a single job called "build"
+  lint:
+    name: Code Linting
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # Run Linter against code base
+    - name: Lint Code Base
+      uses: github/super-linter@v4.2.0
+      env:
+        VALIDATE_TERRAFORM_TERRASCAN: false
+        VALIDATE_ALL_CODEBASE: false
+        VALIDATE_POWERSHELL: false
+        VALIDATE_ANSIBLE: false
+        DEFAULT_BRANCH: main
+        YAML_CONFIG_FILE: .yamllint.yml
+        # Due to CRDs not being supported at the moment
+        # https://github.com/github/super-linter/issues/987
+        VALIDATE_KUBERNETES_KUBEVAL: false
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+  buildAndPushTaggedRelease:
+    name: Build & Push Release    
+    runs-on: ubuntu-latest
+    needs: lint
+    env:
+      VERSION: v1.0.0
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16  
+        
+    - name: Set up Go env
+      run: |
+        echo "GOPATH=$GITHUB_WORKSPACE/go" >> $GITHUB_ENV
+        echo "GOBIN=$GITHUB_WORKSPACE/go/bin" >> $GITHUB_ENV
+        echo "GITHUB_WORK_DIR=./go/src/github.com/${{ github.repository }}" >> $GITHUB_ENV
+        echo "PLUGIN_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+        echo "PATH=$GITHUB_WORKSPACE/go/bin:$PATH" >> $GITHUB_ENV        
+        
+    - name: Checkout Code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        path: ${{ env.GITHUB_WORK_DIR }}      
+   
+    - name: Build Code
+      working-directory: ${{ env.GITHUB_WORK_DIR }}
+      run: make build
+      
+    # https://github.com/svenstaro/upload-release-action  
+    - name: Upload Binaries To Release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{ env.GOBIN }}/${{ env.PLUGIN_NAME }}-*
+        release_name: Release ${{ env.VERSION }}
+        tag: ${{ env.VERSION }}
+        overwrite: true
+        file_glob: true
+
+  
