@@ -1,4 +1,4 @@
-# This is a basic workflow for building and pushing the eirinix image to entitled registry.
+# This is a basic workflow for building and pushing the plugin binaries to release
 
 name: Main CI
 
