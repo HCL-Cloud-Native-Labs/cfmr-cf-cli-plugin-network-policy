@@ -4,7 +4,7 @@
 | ---     | ---   |
 | CI | [![CI status](https://github.com/HCL-Cloud-Native-Labs/cfmr-cf-cli-plugin-network-policy/workflows/Main%20CI/badge.svg)](https://github.com/HCL-Cloud-Native-Labs/cfmr-cf-cli-plugin-network-policy/actions?query=workflow%3AMain+CI) |
 
-# About
+## About
 This plugin enables App to App direct communication in CFMR
 
 ## Usage
