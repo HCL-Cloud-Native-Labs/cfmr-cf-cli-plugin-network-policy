@@ -3,7 +3,7 @@
 PLUGIN_NAME := $(shell basename "$(PWD)")
 PLUGIN_BIN_PATH := ${GOBIN}
 
-build = GOOS=$(1) GOARCH=$(2) go build -o ${PLUGIN_BIN_PATH}/$(PLUGIN_NAME)-$(1)-$(2)$(3)
+build = GOOS=$(1) GOARCH=$(2) go build -o ${PLUGIN_BIN_PATH}/$(PLUGIN_NAME)-$(1)-$(2)$(3) -ldflags="-X main.pluginVersion=v1.0.0"
 
 build: clean release
 
