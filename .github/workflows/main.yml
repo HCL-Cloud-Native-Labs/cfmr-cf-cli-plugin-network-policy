@@ -78,5 +78,3 @@ jobs:
         tag: ${{ env.VERSION }}
         overwrite: true
         file_glob: true
-
-  
