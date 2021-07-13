@@ -1,4 +1,4 @@
-# CF CLI Plugin Network Policy 
+# CF CLI Plugin Network Policy
 
 | Build | State |
 | ---     | ---   |
