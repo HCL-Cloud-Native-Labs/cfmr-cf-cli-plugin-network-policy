@@ -20,7 +20,7 @@ docker build --no-cache --tag hclcnlabs/cfmr-cf-cli-plugin-network-policy:1.0.0 
 docker push hclcnlabs/cfmr-cf-cli-plugin-network-policy:1.0.0
 ```
 ## Installation Steps
-- `cf install-plugin plugin -f`
+- `cf install-plugin -f https://github.com/HCL-Cloud-Native-Labs/cfmr-cf-cli-plugin-network-policy/releases/download/v1.0.0/cfmr-cf-cli-plugin-network-policy-linux-amd64`
 
 ## Maintainers
 The following are the custodians of this codebase:
