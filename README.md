@@ -7,19 +7,9 @@
 ## About
 This plugin enables App to App direct communication in CFMR
 
-## Usage
-Build image from repo:
-
-```shell script
-# Clone repo and cd into it then...
-docker build --no-cache --tag hclcnlabs/cfmr-cf-cli-plugin-network-policy:1.0.0 .
-```
-
-```shell script
-# Push the image to dockerhub(hclcnlabs)...
-docker push hclcnlabs/cfmr-cf-cli-plugin-network-policy:1.0.0
-```
 ## Installation Steps
+Go to `https://github.com/HCL-Cloud-Native-Labs/cfmr-cf-cli-plugin-network-policy/releases/` and get URL of the plugin version you want to install and then use below command to install the plugin.
+
 - `cf install-plugin -f https://github.com/HCL-Cloud-Native-Labs/cfmr-cf-cli-plugin-network-policy/releases/download/v1.0.0/cfmr-cf-cli-plugin-network-policy-linux-amd64`
 
 ## Maintainers
