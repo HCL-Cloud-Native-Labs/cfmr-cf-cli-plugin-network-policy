@@ -26,7 +26,7 @@ type CommandArgs struct {
 
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
 	ca := validateAndParseArgs(args)
-	fmt.Printf("CommandArgs:%+v", ca)
+	fmt.Printf("CommandArgs:%+v\n", ca)
 }
 
 func validateAndParseArgs(args []string) CommandArgs {
@@ -48,7 +48,7 @@ func validateAndParseArgs(args []string) CommandArgs {
 	}
 
 	flagSet := flag.NewFlagSet(addCfmrNetworkPolicyCommand, flag.ExitOnError)
-	fmt.Println("Parsing Command line arguments")
+	fmt.Println("Parsing Command line arguments...")
 
 	destinationApp := flagSet.String(
 		"destination-app",
