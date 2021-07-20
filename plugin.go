@@ -48,7 +48,7 @@ func validateAndParseArgs(args []string) CommandArgs {
 	}
 
 	flagSet := flag.NewFlagSet(addCfmrNetworkPolicyCommand, flag.ExitOnError)
-	fmt.Println("Parsing Command line arguments...")
+	fmt.Println("Parsing Command Arguments...")
 
 	destinationApp := flagSet.String(
 		"destination-app",
