@@ -115,6 +115,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 	}
 	fmt.Println("sourceAppGUID:", sourceAppGUID)
 
+	fmt.Println("Fetching GUID for", ca.destinationApp)
 	destinationAppGUID, err := cliClient.GetAppGUID(ca.destinationApp)
 	if err != nil {
 		fmt.Println("Unable to fetch guid for app", ca.destinationApp, " \nERROR:", err)
