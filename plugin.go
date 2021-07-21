@@ -25,11 +25,11 @@ type CommandArgs struct {
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
-	ca := validateAndParseArgs(args)
+	ca := parseAndValidateArgs(args)
 	fmt.Printf("CommandArgs:%+v\n", ca)
 }
 
-func validateAndParseArgs(args []string) CommandArgs {
+func parseAndValidateArgs(args []string) CommandArgs {
 	ca := CommandArgs{}
 	if len(args) == 1 && args[0] == "CLI-MESSAGE-UNINSTALL" {
 		// someone's uninstalling the plugin, but we don't need to clean up
