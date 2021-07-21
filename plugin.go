@@ -27,6 +27,7 @@ type CommandArgs struct {
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
+	fmt.Println("args:", args)
 	ca := parseAndValidateArgs(args)
 	fmt.Printf("CommandArgs:%+v\n", ca)
 	cliClient := client.NewCliClient(cliConnection)
