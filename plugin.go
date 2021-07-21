@@ -107,7 +107,7 @@ func parseAndValidateArgs(args []string) CommandArgs {
 }
 
 func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
-	fmt.Println("Fetching GUID for ", ca.sourceApp)
+	fmt.Println("Fetching GUID for", ca.sourceApp)
 	sourceAppGUID, err := cliClient.GetAppGUID(ca.sourceApp)
 	if err != nil {
 		fmt.Println("Unable to fetch guid for app", ca.sourceApp, " \nERROR:", err)
