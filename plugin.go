@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 
+	"code.ibm.com/cfmr-cf-cli-plugin-network-policy/client"
+
 	"code.cloudfoundry.org/cli/plugin"
 )
 
@@ -27,6 +29,8 @@ type CommandArgs struct {
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
 	ca := parseAndValidateArgs(args)
 	fmt.Printf("CommandArgs:%+v\n", ca)
+	cliClient := client.NewCliClient(cliConnection)
+	createNetworkPolicy(cliClient, ca)
 }
 
 func parseAndValidateArgs(args []string) CommandArgs {
@@ -100,6 +104,16 @@ func parseAndValidateArgs(args []string) CommandArgs {
 	}
 
 	return ca
+}
+
+func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
+	sourceAppGUID, err := cliClient.GetAppGUID(ca.sourceApp)
+	if err != nil {
+		fmt.Println("Unable to fetch guid for app", ca.sourceApp, " \nERROR:", err)
+		os.Exit(0)
+	}
+	fmt.Println("sourceAppGUID:", sourceAppGUID)
+
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) GetMetadata() plugin.PluginMetadata {
