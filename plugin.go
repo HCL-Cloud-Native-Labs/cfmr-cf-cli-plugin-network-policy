@@ -115,6 +115,13 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 	}
 	fmt.Println("sourceAppGUID:", sourceAppGUID)
 
+	destinationAppGUID, err := cliClient.GetAppGUID(ca.destinationApp)
+	if err != nil {
+		fmt.Println("Unable to fetch guid for app", ca.destinationApp, " \nERROR:", err)
+		os.Exit(0)
+	}
+	fmt.Println("destinationAppGUID:", destinationAppGUID)
+
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) GetMetadata() plugin.PluginMetadata {
