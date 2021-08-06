@@ -3,17 +3,17 @@ package client
 import "code.cloudfoundry.org/cli/plugin"
 
 type CliClient struct {
-	cf plugin.CliConnection
+	plugin.CliConnection
 }
 
-func NewCliClient(cf plugin.CliConnection) *CliClient {
+func NewCliClient(cliConn plugin.CliConnection) *CliClient {
 	return &CliClient{
-		cf: cf,
+		CliConnection: cliConn,
 	}
 }
 
 func (cliClient *CliClient) GetAppGUID(appName string) (string, error) {
-	appModel, err := cliClient.cf.GetApp(appName)
+	appModel, err := cliClient.GetApp(appName)
 	if err != nil {
 		return "", err
 	}
