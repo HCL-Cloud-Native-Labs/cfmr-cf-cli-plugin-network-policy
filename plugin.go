@@ -155,7 +155,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 	fmt.Println("destinationGUID:", destinationGUID)
 
 	serviceArgs := []string{"create-service", networkPolicyServiceBroker, networkPolicyServicePlan}
-	serviceName := ca.sourceApp + "2" + ca.destinationApp
+	serviceName := ca.sourceApp + "-" + ca.destinationApp
 	serviceArgs = append(serviceArgs, serviceName)
 	serviceArgs = append(serviceArgs, "-c")
 	serviceConfigParams := NetworkPolicyServiceConfigParams{
@@ -184,7 +184,6 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		fmt.Println("Unable to create network policy service", " \nERROR:", err)
 		os.Exit(0)
 	}
-	fmt.Printf("Network policy service '%s' created successfully!!\n", serviceName)
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) GetMetadata() plugin.PluginMetadata {
