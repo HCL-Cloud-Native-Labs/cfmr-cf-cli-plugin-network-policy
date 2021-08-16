@@ -164,7 +164,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		DestinationGUID:    destinationGUID,
 		Ports: []ServicePort{
 			{
-				Name:       "cat",
+				Name:       "port01",
 				Port:       ca.port,
 				TargetPort: ca.port,
 				Protocol:   ca.protocol,
