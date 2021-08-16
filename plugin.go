@@ -57,7 +57,6 @@ type ServicePort struct {
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
 	fmt.Println("args:", args)
 	ca := parseAndValidateArgs(args)
-	fmt.Printf("CommandArgs:%+v\n", ca)
 	cliClient := client.NewCliClient(cliConnection)
 	createNetworkPolicy(cliClient, ca)
 }
@@ -143,7 +142,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		os.Exit(0)
 	}
 
-	fmt.Println("sourceAppGUID:", sourceGUID)
+	fmt.Println("GUID fethed for app", ca.sourceApp, " is", sourceGUID)
 
 	fmt.Println("Fetching GUID for", ca.destinationApp)
 	destinationGUID, err := cliClient.GetAppGUID(ca.destinationApp)
@@ -152,7 +151,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		os.Exit(0)
 	}
 
-	fmt.Println("destinationGUID:", destinationGUID)
+	fmt.Println("GUID fethed for app", ca.sourceApp, " is", destinationGUID)
 
 	serviceArgs := []string{"create-service", networkPolicyServiceBroker, networkPolicyServicePlan}
 	serviceName := ca.sourceApp + "-" + ca.destinationApp
