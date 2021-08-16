@@ -1,6 +1,18 @@
+/*
+###############################################################################
+# Licensed Materials - Property of IBM
+# Copyright IBM Corporation 2020, 2021. All Rights Reserved
+# US Government Users Restricted Rights -
+# Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+# This is an internal component, bundled with an official IBM product.
+# Please refer to that particular license for additional information.
+# ###############################################################################
+*/
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -14,6 +26,8 @@ import (
 
 const (
 	addCfmrNetworkPolicyCommand = "add-cfmr-network-policy"
+	networkPolicyServiceBroker  = "network-policy"
+	networkPolicyServicePlan    = "c2c"
 )
 
 type AddCfmrNetworkPolicyPlugin struct{}
@@ -24,6 +38,20 @@ type CommandArgs struct {
 	destinationApp string
 	port           int
 	protocol       string
+}
+
+type NetworkPolicyServiceConfigParams struct {
+	SourceGUID         string        `json:"source-guid"`
+	DestinationAppName string        `json:"destination-appname"`
+	DestinationGUID    string        `json:"destination-guid"`
+	Ports              []ServicePort `json:"ports"`
+}
+
+type ServicePort struct {
+	Name       string `json:"name"`
+	Port       int    `json:"port"`
+	TargetPort int    `json:"targetport"`
+	Protocol   string `json:"protocol"`
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
@@ -109,21 +137,48 @@ func parseAndValidateArgs(args []string) CommandArgs {
 
 func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 	fmt.Println("Fetching GUID for", ca.sourceApp)
-	sourceAppGUID, err := cliClient.GetAppGUID(ca.sourceApp)
+	sourceGUID, err := cliClient.GetAppGUID(ca.sourceApp)
 	if err != nil {
 		fmt.Println("Unable to fetch guid for app", ca.sourceApp, " \nERROR:", err)
 		os.Exit(0)
 	}
-	fmt.Println("sourceAppGUID:", sourceAppGUID)
+
+	fmt.Println("sourceAppGUID:", sourceGUID)
 
 	fmt.Println("Fetching GUID for", ca.destinationApp)
-	destinationAppGUID, err := cliClient.GetAppGUID(ca.destinationApp)
+	destinationGUID, err := cliClient.GetAppGUID(ca.destinationApp)
 	if err != nil {
 		fmt.Println("Unable to fetch guid for app", ca.destinationApp, " \nERROR:", err)
 		os.Exit(0)
 	}
-	fmt.Println("destinationAppGUID:", destinationAppGUID)
 
+	fmt.Println("destinationGUID:", destinationGUID)
+
+	serviceArgs := []string{"create-service", networkPolicyServiceBroker, networkPolicyServicePlan}
+	serviceName := ca.sourceApp + "2" + ca.destinationApp
+	serviceArgs = append(serviceArgs, serviceName)
+	serviceArgs = append(serviceArgs, "-c")
+	serviceConfigParams := NetworkPolicyServiceConfigParams{
+		SourceGUID:         sourceGUID,
+		DestinationAppName: ca.destinationApp,
+		DestinationGUID:    destinationGUID,
+		Ports: []ServicePort{
+			{
+				Name:       "cat",
+				Port:       ca.port,
+				TargetPort: ca.port,
+				Protocol:   ca.protocol,
+			},
+		},
+	}
+
+	serviceConfigParamsJSON, err := json.Marshal(serviceConfigParams)
+	if err != nil {
+		fmt.Println("Unable to unmarshal network policy service configuration parameters", " \nERROR:", err)
+		os.Exit(0)
+	}
+	serviceArgs = append(serviceArgs, fmt.Sprintf("'%s'", string(serviceConfigParamsJSON)))
+	fmt.Println("serviceArgs", serviceArgs)
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) GetMetadata() plugin.PluginMetadata {
