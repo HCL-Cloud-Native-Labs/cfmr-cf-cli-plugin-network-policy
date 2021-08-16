@@ -177,8 +177,14 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		fmt.Println("Unable to unmarshal network policy service configuration parameters", " \nERROR:", err)
 		os.Exit(0)
 	}
-	serviceArgs = append(serviceArgs, fmt.Sprintf("'%s'", string(serviceConfigParamsJSON)))
+	serviceArgs = append(serviceArgs, string(serviceConfigParamsJSON))
 	fmt.Println("serviceArgs", serviceArgs)
+	_, err = cliClient.CliCommand(serviceArgs...)
+	if err != nil {
+		fmt.Println("Unable to create network policy service", " \nERROR:", err)
+		os.Exit(0)
+	}
+	fmt.Printf("Network policy service '%s' created successfully!!\n", serviceName)
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) GetMetadata() plugin.PluginMetadata {
