@@ -55,6 +55,7 @@ type ServicePort struct {
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
+	fmt.Println("args:", args)
 	ca := parseAndValidateArgs(args)
 	cliClient := client.NewCliClient(cliConnection)
 	createNetworkPolicy(cliClient, ca)
@@ -128,8 +129,8 @@ func parseAndValidateArgs(args []string) CommandArgs {
 		os.Exit(0)
 	}
 
-	for _, p := range protocols {
-		pro := strings.TrimSpace(p)
+	for _, pr := range protocols {
+		pro := strings.TrimSpace(pr)
 		if pro == "" {
 			ca.protocols = append(ca.protocols, "tcp")
 		} else if pro != "tcp" && pro != "udp" {
