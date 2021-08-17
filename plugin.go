@@ -115,12 +115,12 @@ func parseAndValidateArgs(args []string) CommandArgs {
 	ports := strings.Split(*port, ",")
 
 	for _, p := range ports {
-		pno, err := strconv.Atoi(strings.TrimSpace(p))
+		prt, err := strconv.Atoi(strings.TrimSpace(p))
 		if err != nil {
 			fmt.Println("port should be a number")
 			os.Exit(0)
 		}
-		ca.ports = append(ca.ports, pno)
+		ca.ports = append(ca.ports, prt)
 	}
 
 	protocols := strings.Split(*protocol, ",")
@@ -129,15 +129,15 @@ func parseAndValidateArgs(args []string) CommandArgs {
 		os.Exit(0)
 	}
 
-	for _, pr := range protocols {
-		pro := strings.TrimSpace(pr)
-		if pro == "" {
+	for _, p := range protocols {
+		prot := strings.TrimSpace(p)
+		if prot == "" {
 			ca.protocols = append(ca.protocols, "tcp")
-		} else if pro != "tcp" && pro != "udp" {
+		} else if prot != "tcp" && prot != "udp" {
 			fmt.Println("Invalid protocol, valid values are (tcp | udp)")
 			os.Exit(0)
 		} else {
-			ca.protocols = append(ca.protocols, pro)
+			ca.protocols = append(ca.protocols, prot)
 		}
 	}
 
