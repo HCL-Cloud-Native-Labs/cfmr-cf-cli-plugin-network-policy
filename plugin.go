@@ -157,7 +157,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		os.Exit(0)
 	}
 
-	fmt.Println("GUID fethed for app", ca.sourceApp, " is", sourceGUID)
+	fmt.Println("GUID fethed for ", ca.sourceApp, "app is", sourceGUID)
 
 	fmt.Println("Fetching GUID for", ca.destinationApp)
 	destinationGUID, err := cliClient.GetAppGUID(ca.destinationApp)
@@ -166,7 +166,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		os.Exit(0)
 	}
 
-	fmt.Println("GUID fethed for app", ca.sourceApp, " is", destinationGUID)
+	fmt.Println("GUID fethed for ", ca.sourceApp, "app is", destinationGUID)
 
 	serviceArgs := []string{"create-service", networkPolicyServiceBroker, networkPolicyServicePlan}
 	serviceName := ca.sourceApp + "-" + ca.destinationApp
