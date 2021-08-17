@@ -36,8 +36,8 @@ type CommandArgs struct {
 	command        string
 	sourceApp      string
 	destinationApp string
-	port           int
-	protocol       string
+	ports          []int
+	protocols      []string
 }
 
 type NetworkPolicyServiceConfigParams struct {
@@ -62,7 +62,7 @@ func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, arg
 }
 
 func parseAndValidateArgs(args []string) CommandArgs {
-	ca := CommandArgs{}
+	ca := CommandArgs{ports: []int{}, protocols: []string{}}
 	if len(args) == 1 && args[0] == "CLI-MESSAGE-UNINSTALL" {
 		// someone's uninstalling the plugin, but we don't need to clean up
 		fmt.Println("Uninstalling plugin, but we don't need to clean up")
@@ -102,33 +102,64 @@ func parseAndValidateArgs(args []string) CommandArgs {
 
 	err := flagSet.Parse(args[2:])
 	if err != nil {
-		fmt.Println("ERROR:>")
-		fmt.Println(err)
+		fmt.Println("ERROR:", err)
+	}
+
+	if *destinationApp == "" {
+		fmt.Println("destination app name is required")
+		os.Exit(0)
+	}
+
+	if *port == "" {
+		fmt.Println("port number is required")
+		os.Exit(0)
+	}
+
+	if *protocol == "" {
+		fmt.Println("protocol is required")
+		os.Exit(0)
 	}
 
 	ca.command = strings.TrimSpace(args[0])
 	ca.sourceApp = strings.TrimSpace(args[1])
 	ca.destinationApp = strings.TrimSpace(*destinationApp)
-	ca.port, err = strconv.Atoi(strings.TrimSpace(*port))
-	if err != nil {
-		fmt.Println("port should be a number")
+
+	ports := strings.Split(*port, ",")
+
+	if len(ports) == 0 {
+		ca.ports = append(ca.ports, 8080)
+	} else {
+		for _, p := range ports {
+			pno, err := strconv.Atoi(strings.TrimSpace(p))
+			if err != nil {
+				fmt.Println("port should be a number")
+				os.Exit(0)
+			}
+			ca.ports = append(ca.ports, pno)
+		}
+	}
+
+	protocols := strings.Split(*protocol, ",")
+	if len(protocols) > len(ports) {
+		fmt.Println("protocol and port mismatched")
 		os.Exit(0)
 	}
-	ca.protocol = strings.TrimSpace(*protocol)
 
-	if ca.destinationApp == "" {
-		fmt.Println("destination app name is required")
-		os.Exit(0)
+	for _, p := range protocols {
+		pro := strings.TrimSpace(p)
+		if pro == "" {
+			ca.protocols = append(ca.protocols, "tcp")
+		} else if pro != "tcp" && pro != "udp" {
+			fmt.Println("Invalid protocol, valid values are (tcp | udp)")
+			os.Exit(0)
+		} else {
+			ca.protocols = append(ca.protocols, pro)
+		}
 	}
 
-	if ca.port == 0 {
-		fmt.Println("port number is required")
-		os.Exit(0)
-	}
-
-	if ca.protocol == "" {
-		fmt.Println("protocol is required")
-		os.Exit(0)
+	//Set default protocol for all other ports
+	for i := 0; i < len(ports)-len(protocols); i++ {
+		ca.protocols = append(ca.protocols, "tcp")
 	}
 
 	return ca
@@ -161,14 +192,17 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		SourceGUID:         sourceGUID,
 		DestinationAppName: ca.destinationApp,
 		DestinationGUID:    destinationGUID,
-		Ports: []ServicePort{
-			{
-				Name:       "port01",
-				Port:       ca.port,
-				TargetPort: ca.port,
-				Protocol:   ca.protocol,
-			},
-		},
+		Ports:              []ServicePort{},
+	}
+
+	for i, port := range ca.ports {
+		portName := fmt.Sprintf("port%02d", port)
+		serviceConfigParams.Ports = append(serviceConfigParams.Ports, ServicePort{
+			Name:       portName,
+			Port:       port,
+			TargetPort: port,
+			Protocol:   ca.protocols[i],
+		})
 	}
 
 	serviceConfigParamsJSON, err := json.Marshal(serviceConfigParams)
@@ -176,7 +210,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		fmt.Println("Unable to unmarshal network policy service configuration parameters", " \nERROR:", err)
 		os.Exit(0)
 	}
-	serviceArgs = append(serviceArgs, string(serviceConfigParamsJSON))
+	serviceArgs = append(serviceArgs, fmt.Sprintf("'%s'", string(serviceConfigParamsJSON)))
 	fmt.Println("serviceArgs", serviceArgs)
 	_, err = cliClient.CliCommand(serviceArgs...)
 	if err != nil {
