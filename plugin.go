@@ -89,13 +89,13 @@ func parseAndValidateArgs(args []string) CommandArgs {
 	port := flagSet.String(
 		"port",
 		"8080",
-		"port on which destination app will be exposed",
+		"ports on which destination app will be exposed",
 	)
 
 	protocol := flagSet.String(
 		"protocol",
 		"tcp",
-		"protocol on which destination app will be exposed",
+		"protocols on which destination app will be exposed",
 	)
 
 	err := flagSet.Parse(args[2:])
@@ -190,14 +190,14 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 
 	serviceConfigParamsJSON, err := json.Marshal(serviceConfigParams)
 	if err != nil {
-		fmt.Println("Unable to unmarshal network policy service configuration parameters", " \nERROR:", err)
+		fmt.Println("Unable to unmarshal network policy configuration parameters", " \nERROR:", err)
 		os.Exit(0)
 	}
 	serviceArgs = append(serviceArgs, fmt.Sprintf("'%s'", string(serviceConfigParamsJSON)))
 	fmt.Println("serviceArgs", serviceArgs)
 	_, err = cliClient.CliCommand(serviceArgs...)
 	if err != nil {
-		fmt.Println("Unable to create network policy service", " \nERROR:", err)
+		fmt.Println("Unable to create network policy", " \nERROR:", err)
 		os.Exit(0)
 	}
 }
