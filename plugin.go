@@ -107,16 +107,6 @@ func parseAndValidateArgs(args []string) CommandArgs {
 		os.Exit(0)
 	}
 
-	if *port == "" {
-		fmt.Println("port number is required")
-		os.Exit(0)
-	}
-
-	if *protocol == "" {
-		fmt.Println("protocol is required")
-		os.Exit(0)
-	}
-
 	ca.command = strings.TrimSpace(args[0])
 	ca.sourceApp = strings.TrimSpace(args[1])
 	ca.destinationApp = strings.TrimSpace(*destinationApp)
