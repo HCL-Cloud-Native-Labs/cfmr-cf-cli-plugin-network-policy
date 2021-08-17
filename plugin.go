@@ -55,7 +55,6 @@ type ServicePort struct {
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
-	fmt.Println("args:", args)
 	ca := parseAndValidateArgs(args)
 	cliClient := client.NewCliClient(cliConnection)
 	createNetworkPolicy(cliClient, ca)
@@ -64,8 +63,6 @@ func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, arg
 func parseAndValidateArgs(args []string) CommandArgs {
 	ca := CommandArgs{ports: []int{}, protocols: []string{}}
 	if len(args) == 1 && args[0] == "CLI-MESSAGE-UNINSTALL" {
-		// someone's uninstalling the plugin, but we don't need to clean up
-		fmt.Println("Uninstalling plugin, but we don't need to clean up")
 		os.Exit(0)
 	}
 
