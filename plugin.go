@@ -87,13 +87,13 @@ func parseAndValidateArgs(args []string) CommandArgs {
 
 	port := flagSet.String(
 		"port",
-		"",
+		"8080",
 		"port on which destination app will be exposed",
 	)
 
 	protocol := flagSet.String(
 		"protocol",
-		"",
+		"tcp",
 		"protocol on which destination app will be exposed",
 	)
 
@@ -113,17 +113,13 @@ func parseAndValidateArgs(args []string) CommandArgs {
 
 	ports := strings.Split(*port, ",")
 
-	if len(ports) == 0 {
-		ca.ports = append(ca.ports, 8080)
-	} else {
-		for _, p := range ports {
-			pno, err := strconv.Atoi(strings.TrimSpace(p))
-			if err != nil {
-				fmt.Println("port should be a number")
-				os.Exit(0)
-			}
-			ca.ports = append(ca.ports, pno)
+	for _, p := range ports {
+		pno, err := strconv.Atoi(strings.TrimSpace(p))
+		if err != nil {
+			fmt.Println("port should be a number")
+			os.Exit(0)
 		}
+		ca.ports = append(ca.ports, pno)
 	}
 
 	protocols := strings.Split(*protocol, ",")
