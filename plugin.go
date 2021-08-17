@@ -55,7 +55,7 @@ type ServicePort struct {
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
-	fmt.Printf("%#v\n", args)
+	//fmt.Printf("%#v\n", args)
 	ca := parseAndValidateArgs(args)
 	cliClient := client.NewCliClient(cliConnection)
 	createNetworkPolicy(cliClient, ca)
