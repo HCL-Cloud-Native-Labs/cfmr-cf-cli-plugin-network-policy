@@ -179,7 +179,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 	}
 
 	for i, port := range ca.ports {
-		portName := fmt.Sprintf("port%02d", port)
+		portName := fmt.Sprintf("port%02d", i)
 		serviceConfigParams.Ports = append(serviceConfigParams.Ports, ServicePort{
 			Name:       portName,
 			Port:       port,
