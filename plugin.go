@@ -193,7 +193,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		fmt.Println("Unable to unmarshal network policy configuration parameters", " \nERROR:", err)
 		os.Exit(0)
 	}
-	serviceArgs = append(serviceArgs, fmt.Sprintf("'%s'", string(serviceConfigParamsJSON)))
+	serviceArgs = append(serviceArgs, string(serviceConfigParamsJSON))
 	fmt.Println("serviceArgs", serviceArgs)
 	_, err = cliClient.CliCommand(serviceArgs...)
 	if err != nil {
