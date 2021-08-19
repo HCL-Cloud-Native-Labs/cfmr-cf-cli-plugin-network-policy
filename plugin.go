@@ -110,8 +110,12 @@ func parseAndValidateArgs(args []string) CommandArgs {
 	ca.command = strings.TrimSpace(args[0])
 	ca.sourceApp = strings.TrimSpace(args[1])
 	ca.destinationApp = strings.TrimSpace(*destinationApp)
+	validatePortAndProtocol(*port, *protocol, &ca)
+	return ca
+}
 
-	ports := strings.Split(*port, ",")
+func validatePortAndProtocol(port string, protocol string, ca *CommandArgs) {
+	ports := strings.Split(port, ",")
 
 	for _, p := range ports {
 		prt, err := strconv.Atoi(strings.TrimSpace(p))
@@ -122,7 +126,7 @@ func parseAndValidateArgs(args []string) CommandArgs {
 		ca.ports = append(ca.ports, prt)
 	}
 
-	protocols := strings.Split(*protocol, ",")
+	protocols := strings.Split(protocol, ",")
 	if len(protocols) > len(ports) {
 		fmt.Println("protocol and port mismatched")
 		os.Exit(0)
@@ -146,8 +150,6 @@ func parseAndValidateArgs(args []string) CommandArgs {
 	for i := 0; i < len(ports)-len(protocols); i++ {
 		ca.protocols = append(ca.protocols, "tcp")
 	}
-
-	return ca
 }
 
 func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
