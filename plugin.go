@@ -19,9 +19,8 @@ import (
 	"strconv"
 	"strings"
 
-	"code.ibm.com/cfmr-cf-cli-plugin-network-policy/client"
-
 	"code.cloudfoundry.org/cli/plugin"
+	"code.ibm.com/cfmr-cf-cli-plugin-network-policy/client"
 )
 
 const (
@@ -194,7 +193,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		os.Exit(0)
 	}
 	serviceArgs = append(serviceArgs, string(serviceConfigParamsJSON))
-	fmt.Println("serviceArgs", serviceArgs)
+	//fmt.Println("serviceArgs", serviceArgs)
 	_, err = cliClient.CliCommand(serviceArgs...)
 	if err != nil {
 		fmt.Println("Unable to create network policy", " \nERROR:", err)
