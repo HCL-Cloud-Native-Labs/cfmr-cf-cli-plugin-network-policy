@@ -44,9 +44,8 @@ func (cliClient *CliClient) GetAppGUID(appName string) (string, error) {
 				Name: appName,
 				Err:  err,
 			}
-		} else {
-			return "", fmt.Errorf("%s: %w", fmt.Sprintf("Unable to fetch guid for app %s", appName), err)
 		}
+		return "", fmt.Errorf("%s: %w", fmt.Sprintf("Unable to fetch guid for app %s", appName), err)
 	}
 
 	return appModel.Guid, nil

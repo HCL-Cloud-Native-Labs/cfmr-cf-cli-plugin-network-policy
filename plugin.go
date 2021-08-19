@@ -54,7 +54,7 @@ type ServicePort struct {
 }
 
 func (c *AddCfmrNetworkPolicyPlugin) Run(cliConnection plugin.CliConnection, args []string) {
-	//fmt.Printf("%#v\n", args)
+	// fmt.Printf("%#v\n", args)
 	ca := parseAndValidateArgs(args)
 	cliClient := client.NewCliClient(cliConnection)
 	createNetworkPolicy(cliClient, ca)
@@ -77,7 +77,7 @@ func parseAndValidateArgs(args []string) CommandArgs {
 	}
 
 	flagSet := flag.NewFlagSet(addCfmrNetworkPolicyCommand, flag.ExitOnError)
-	//fmt.Println("Parsing Command Arguments...")
+	// fmt.Println("Parsing Command Arguments...")
 
 	destinationApp := flagSet.String(
 		"destination-app",
@@ -130,17 +130,19 @@ func parseAndValidateArgs(args []string) CommandArgs {
 
 	for _, p := range protocols {
 		prot := strings.TrimSpace(p)
-		if prot == "" {
+		switch {
+		case prot == "":
 			ca.protocols = append(ca.protocols, "tcp")
-		} else if prot != "tcp" && prot != "udp" {
+		case prot != "tcp" && prot != "udp":
 			fmt.Println("Invalid protocol, valid values are (tcp | udp)")
 			os.Exit(0)
-		} else {
+		default:
 			ca.protocols = append(ca.protocols, prot)
+
 		}
 	}
 
-	//Set default protocol for all other ports
+	// Set default protocol for all other ports
 	for i := 0; i < len(ports)-len(protocols); i++ {
 		ca.protocols = append(ca.protocols, "tcp")
 	}
@@ -193,7 +195,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 		os.Exit(0)
 	}
 	serviceArgs = append(serviceArgs, string(serviceConfigParamsJSON))
-	//fmt.Println("serviceArgs", serviceArgs)
+	// fmt.Println("serviceArgs", serviceArgs)
 	_, err = cliClient.CliCommand(serviceArgs...)
 	if err != nil {
 		fmt.Println("Unable to create network policy", " \nERROR:", err)
