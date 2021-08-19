@@ -23,11 +23,7 @@ type AppNotFoundError struct {
 }
 
 func (e *AppNotFoundError) Error() string {
-	return fmt.Sprintf(`The application %s cannot be found.
-		                    This could be a result of the application not being visible within 
-							the current CF CLI target context or the current user lacking permission 
-							to list and view the application names provided or a typo within 
-							the provided application names. Please review and try again`, e.Name)
+	return fmt.Sprintf("The application %s cannot be found.This could be a result of the application not being visible within the current CF CLI target context or the current user lacking permission to list and view the application names provided or a typo within the provided application names. Please review and try again", e.Name)
 }
 
 type CliClient struct {
@@ -42,9 +38,6 @@ func NewCliClient(cliConn plugin.CliConnection) *CliClient {
 
 func (cliClient *CliClient) GetAppGUID(appName string) (string, error) {
 	appModel, err := cliClient.GetApp(appName)
-	fmt.Printf("%v\n", err)
-	fmt.Printf("%+v\n", err)
-	fmt.Printf("%#v\n", err)
 	if err != nil {
 		if err.Error() == fmt.Sprintf("App %s not found", appName) {
 			return "", &AppNotFoundError{
