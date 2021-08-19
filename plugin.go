@@ -153,7 +153,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 	fmt.Println("Fetching GUID for", ca.sourceApp, "app")
 	sourceGUID, err := cliClient.GetAppGUID(ca.sourceApp)
 	if err != nil {
-		fmt.Println("Unable to fetch guid for app", ca.sourceApp, " \nERROR:", err)
+		fmt.Println(err)
 		os.Exit(0)
 	}
 
@@ -162,7 +162,7 @@ func createNetworkPolicy(cliClient *client.CliClient, ca CommandArgs) {
 	fmt.Println("Fetching GUID for", ca.destinationApp, "app")
 	destinationGUID, err := cliClient.GetAppGUID(ca.destinationApp)
 	if err != nil {
-		fmt.Println("Unable to fetch guid for app", ca.destinationApp, " \nERROR:", err)
+		fmt.Println(err)
 		os.Exit(0)
 	}
 

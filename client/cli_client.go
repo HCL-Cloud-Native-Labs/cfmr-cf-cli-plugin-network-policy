@@ -11,7 +11,24 @@
 */
 package client
 
-import "code.cloudfoundry.org/cli/plugin"
+import (
+	"fmt"
+
+	"code.cloudfoundry.org/cli/plugin"
+)
+
+type AppNotFoundError struct {
+	Name string
+	Err  error
+}
+
+func (e *AppNotFoundError) Error() string {
+	return fmt.Sprintf(`The application %s cannot be found.
+		                    This could be a result of the application not being visible within 
+							the current CF CLI target context or the current user lacking permission 
+							to list and view the application names provided or a typo within 
+							the provided application names. Please review and try again`, e.Name)
+}
 
 type CliClient struct {
 	plugin.CliConnection
@@ -25,8 +42,18 @@ func NewCliClient(cliConn plugin.CliConnection) *CliClient {
 
 func (cliClient *CliClient) GetAppGUID(appName string) (string, error) {
 	appModel, err := cliClient.GetApp(appName)
+	fmt.Printf("%v\n", err)
+	fmt.Printf("%+v\n", err)
+	fmt.Printf("%#v\n", err)
 	if err != nil {
-		return "", err
+		if err.Error() == fmt.Sprintf("App %s not found", appName) {
+			return "", &AppNotFoundError{
+				Name: appName,
+				Err:  err,
+			}
+		}
+	} else {
+		return "", fmt.Errorf("unable to fetch guid for app %s %w", appName, err)
 	}
 	return appModel.Guid, nil
 }
