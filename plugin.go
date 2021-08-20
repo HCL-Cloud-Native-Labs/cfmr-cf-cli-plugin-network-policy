@@ -110,11 +110,11 @@ func parseAndValidateArgs(args []string) CommandArgs {
 	ca.command = strings.TrimSpace(args[0])
 	ca.sourceApp = strings.TrimSpace(args[1])
 	ca.destinationApp = strings.TrimSpace(*destinationApp)
-	validatePortAndProtocol(*port, *protocol, &ca)
+	validateAndPopulatePortAndProtocol(*port, *protocol, &ca)
 	return ca
 }
 
-func validatePortAndProtocol(port string, protocol string, ca *CommandArgs) {
+func validateAndPopulatePortAndProtocol(port string, protocol string, ca *CommandArgs) {
 	ports := strings.Split(port, ",")
 
 	for _, p := range ports {
@@ -126,6 +126,7 @@ func validatePortAndProtocol(port string, protocol string, ca *CommandArgs) {
 		ca.ports = append(ca.ports, prt)
 	}
 
+	// validate and populate protocols
 	protocols := strings.Split(protocol, ",")
 	if len(protocols) > len(ports) {
 		fmt.Println("protocol and port mismatched")
