@@ -1,4 +1,4 @@
-module github.com/HCL-Cloud-Native-Labs/cfmr-cf-cli-plugin-network-policy
+module code.ibm.com/cfmr-cf-cli-plugin-network-policy
 
 go 1.16
 
